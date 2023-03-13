@@ -17,7 +17,7 @@ import { Visibility } from "@mui/icons-material";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
-const CarouselCard = () => {
+const CarouselCard = ({ product }) => {
   const [itemCount, setItemCount] = useState(0);
   const [isHoverd, setIshoverd] = useState(false);
   const [wishlist, setWishlist] = useState(false);
@@ -72,14 +72,18 @@ const CarouselCard = () => {
       </Box>
       <Box display="flex" justifyContent="center" height="200px">
         <img
-          src="https://bazaar.ui-lib.com/_next/image?url=%2Fassets%2Fimages%2Fproducts%2Fflash-2.png&w=1920&q=75"
+          src={
+            product.images
+              ? product.images[0].secure_url
+              : "https://bazaar.ui-lib.com/_next/image?url=%2Fassets%2Fimages%2Fproducts%2Fflash-2.png&w=1920&q=75"
+          }
           alt="watch"
           style={{ height: "100%" }}
         />
       </Box>
       <Box display="flex" justifyContent="space-between" height="35px">
         <Typography variant="h6" fontSize={18} color="#737885">
-          Classic Rolex Watch
+          {product.name}
         </Typography>
         {itemCount > 0 && (
           <Button variant="outlined" onClick={decreaseCount} color="secondary">
@@ -107,7 +111,9 @@ const CarouselCard = () => {
       <Box display="flex" justifyContent="space-between">
         <Box display="flex" gap="10px">
           <Typography variant="body1" color="red" fontWeight="bold">
-            ৳1000
+            {product.discountedPrice
+              ? `$${product.discountedPrice}`
+              : product.price}
           </Typography>
           <Typography
             variant="body1"
@@ -117,7 +123,7 @@ const CarouselCard = () => {
               textDecoration: "line-through",
             }}
           >
-            ৳1500
+            {product.discountedPrice && product.price}
           </Typography>
         </Box>
         <Button variant="outlined" color="primary" onClick={increaseCount}>

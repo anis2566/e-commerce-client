@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Navigation, Pagination } from "swiper";
 import "swiper/css";
@@ -6,10 +6,13 @@ import "swiper/css";
 import { Box } from "@mui/material";
 import CarouselCard from "../../components/card/CarouselCard";
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
+import axios from "axios";
 
 const FlashCarousel = () => {
   const [isFirstSlide, setIsFirstSlide] = useState(true);
   const [isLastSlide, setIsLastSlide] = useState(false);
+  const [products, setProducts] = useState([]);
+
   const sliderRef = useRef();
 
   const handleSlideChange = (params) => {
@@ -24,6 +27,16 @@ const FlashCarousel = () => {
   const handlePrev = () => {
     sliderRef.current.swiper.slidePrev();
   };
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const res = await axios.get(`http://localhost:8080/api/product/all`);
+      setProducts(res.data);
+      console.log(products);
+    };
+    fetchProducts();
+  }, []);
+
   return (
     <Box
       width="90%"
@@ -37,7 +50,7 @@ const FlashCarousel = () => {
         freeMode={true}
         grabCursor={true}
         modules={[FreeMode, Pagination, Navigation]}
-        slidesPerView="1"
+        slidesPerView="5"
         spaceBetween={30}
         onSlideChange={(params) => handleSlideChange(params)}
         ref={sliderRef}
@@ -55,11 +68,20 @@ const FlashCarousel = () => {
             slidesPerView: 4,
           },
           1500: {
-            slidesPerView: 5,
+            slidesPerView: 4,
+          },
+          2000: {
+            slidesPerView: 7,
           },
         }}
       >
-        <SwiperSlide>
+        {products.map((product) => (
+          <SwiperSlide key={product._id}>
+            <CarouselCard product={product} />
+          </SwiperSlide>
+        ))}
+
+        {/* <SwiperSlide>
           <CarouselCard />
         </SwiperSlide>
         <SwiperSlide>
@@ -79,10 +101,7 @@ const FlashCarousel = () => {
         </SwiperSlide>
         <SwiperSlide>
           <CarouselCard />
-        </SwiperSlide>
-        <SwiperSlide>
-          <CarouselCard />
-        </SwiperSlide>
+        </SwiperSlide> */}
       </Swiper>
       <Box
         position="absolute"
